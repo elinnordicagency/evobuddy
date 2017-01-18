@@ -23,14 +23,37 @@
 			$("input[name=gender]:radio").change(function () {
 				build_list();
 			});
+			$("#distance-filter").change(function () {
+				build_list();
+			});
+            $("#invite-button").on('click', function(){
+                if (!$(this).data('isFake')){
+                    FB.ui({
+                        method: 'send',
+                        link: 'http://www.buddy.no/',
+                        to: $(this).data("id")
+                    });
+                }
+                else{
+                    FB.ui({
+                        method: 'apprequests',
+                        message: "You have been invited by " + me.name,
+                        to: $(this).data("id")
+                    }, function (resp) {
+                        console.log(resp);
+                    });
+                }
+            });
 		});
+		function fixUser(user, likes) {
 
-		function fixUser(user, likes = null) {
-			user.id = user.id;
-			user.name = user.name;
-			user.picture = user.picture;
-			user.gender = (typeof user.gender === 'undefined') ? "unknown" : user.gender;
-			user.age = (typeof user.age_range === 'undefined') ? "unknown" : user.age_range.min;
+            if (typeof(likes) === 'undefined'){
+                user.isFake = true;
+            }
+
+            else{
+                user.isFake = false;
+            }
 
 			user.same_likes = [];
 			user.location = (typeof user.location === 'undefined') ? null : user.location;
@@ -91,6 +114,10 @@
 		function filter_list() {
 			console.log($('input[name=gender]:checked').val());
 
+            var distance = $("#distance-filter").val();
+            console.log($("#distance-filter"));
+            console.log(distance);
+
 			var users = all_users.filter(function (value) {
 				var gender = $('input[name=gender]:checked').val();
 				if (gender === "both") {
@@ -135,7 +162,6 @@
                                  </div>");
 			});
 		}
-
 		function pushUser(user) {
 			all_users.push(user);
 			build_list();
@@ -160,7 +186,7 @@
 					FB.login(function (response) {
 						if (response.status === "connected") {
 							var authObject = response.authResponse;
-							FB.api('/me?fields=name,picture.type(large),gender,age_range,location.fields(location)',
+							FB.api("/me?fields=name,picture.type(large),gender,age_range,location.fields(location),about",
 								function (me_response) {
 									me = me_response;
 									console.log(me);
@@ -172,7 +198,7 @@
 											me.likes = likes_response.data;
 										});
 									FB.api(
-										"/" + authObject.userID + "/friends?fields=name,gender,age_range,picture.type(large),location.fields(location)",
+										"/" + authObject.userID + "/friends?fields=name,gender,age_range,picture.type(large),location.fields(location),about",
 										function (response) {
 											response.data.forEach(function (user) {
 												FB.api('/' + user.id + "/likes?limit=100",
@@ -248,7 +274,6 @@
 				<input type="radio" name="gender" value="both" checked>
 				<h5 style="padding-left:2%; display: inline-block;margin-top: 10px!important;"> Begge</h5>
 				<br>
-
 			</div>
 
 		</div>

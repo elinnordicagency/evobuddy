@@ -365,6 +365,18 @@ text-decoration:none;
         text-align: left;
 }
 
+/* Inner */
+.popup-inner-cover {
+    max-width:100%;
+    overflow-y: scroll;
+    height: 100%;
+    z-index:1004;
+    	max-height:100%;
+    width:100%;
+    border-radius:0px;
+    background:#ffffff;
+}
+
 .popup-inner h2 {
     color:#787878!important;
     }

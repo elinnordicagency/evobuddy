@@ -16,10 +16,18 @@
 
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <script>
-users = [];
+all_users = [];
 inviteable_friends = [];
 authObject = null;
 me = null;
+
+
+$(function (){
+    $("input[name=gender]:radio").change(function () {
+        build_list();
+    });
+});
+
 
 function fixUser(user, likes = null){
     user.id = user.id;
@@ -28,7 +36,12 @@ function fixUser(user, likes = null){
     user.gender = (typeof user.gender  === 'undefined') ? "unknown" : user.gender;
     user.age = (typeof user.age_range === 'undefined') ? "unknown" : user.age_range.min;
 
-    user.location = null;
+    user.same_likes = [];
+    user.location = (typeof user.location === 'undefined') ? null, user.location;
+
+    if (user.location && me.location.location.latitured && me.location.location.longitude && user.location.location.latitude && user.location.location.longitude){
+        user.distance = get_distance(me.location.location.latitured, me.location.location.longitude, user.location.location,latitude, user.location.location.longitude);
+    }
 
     user.likes = likes;
 
@@ -53,10 +66,12 @@ function get_match_percentage(user){
         for (var i2=0;i2 < me.likes.length; i2++){
             if (user.likes[i].id === me.likes[i2].id){
                 same_likes++;
+                user.same_likes.push(user.likes[i].name);
             }
         }
     }
 
+    user.same_likes = user.same_likes.length !== 0 ? user.same_likes.slice(0,2) : [];
     var gem = (same_likes / me.likes.length) * 100 ;
     var multiplikator = 1 + mul * same_likes;
 
@@ -79,6 +94,19 @@ function get_distance(lat1, lon1, lat2, lon2){
 }
 
 function filter_list(){
+    console.log($('input[name=gender]:checked').val());
+
+    var users = all_users.filter(function(value){
+        var gender = $('input[name=gender]:checked').val();
+        if (gender==="both"){
+            return true
+        }
+        else {
+            return value.gender === gender
+        }
+
+    });
+
     return users.sort(function(a, b){
         if (a.matchPercent < b.matchPercent)
             return 1;
@@ -105,6 +133,7 @@ function build_list(){
                                  <h5>" + user.gender + "</h5> \
                                  <h5>" + user.age + "</h5> \
                                  <h5>Similar interests / likes</h5> \
+                                 <h5> " + user.same_likes + " </h5> \
                                  </div> \
                                  <div class='col-xs-3'> \
                                  <h3 class='matchpercent'>" + user.matchPercent + "%</h3> \
@@ -115,12 +144,12 @@ function build_list(){
 }
 
 function pushUser(user){
-    users.push(user);
+    all_users.push(user);
     build_list();
 }
 window.fbAsyncInit = function() {
     FB.init({
-        appId      : '257174244703662',
+        appId      : '257174244703662',//'398708280464193',
         xfbml      : true,
         version    : 'v2.8'
     });
@@ -139,7 +168,7 @@ window.fbAsyncInit = function() {
             FB.login(function(response){
                 if (response.status === "connected"){
                     var authObject = response.authResponse;
-                    FB.api('/me?fields=name,picture.type(large),gender,age_range',
+                    FB.api('/me?fields=name,picture.type(large),gender,age_range,location.fields(location)',
                         function(me_response){
                             me = me_response;
                             console.log(me);
@@ -151,13 +180,12 @@ window.fbAsyncInit = function() {
                                     me.likes = likes_response.data;
                                 });
                             FB.api(
-                                "/" + authObject.userID + "/friends?fields=name,picture.type(large)",
+                                "/" + authObject.userID + "/friends?fields=name,gender,age_range,picture.type(large),location.fields(location)",
                                 function(response){
                                     response.data.forEach(function(user){
                                         FB.api('/' + user.id + "/likes?limit=100",
                                             function(likes_response){
                                                 user = fixUser(user, likes_response.data);
-                                                console.log(user);
                                                 pushUser(user);
                                             });
                                     });
@@ -216,9 +244,10 @@ window.fbAsyncInit = function() {
 
 <div class="col-xs-12 col-sm-4 pull-left" id="sidebar" style="padding:0px 30px 30px 30px;">
 <h3 style="margin-top: 50px;">Filter</h3>
-<input type="checkbox" name="Male" value="Male"><h5 style="padding-left:2%; display: inline-block;"> Male</h5><br>
-<input type="checkbox" name="Female" value="Female"><h5 style="padding-left:2%; display: inline-block;margin-top: 10px!important;">Female</h5><br>
-<input type="checkbox" name="Both" value="Both"><h5 style="padding-left:2%; display: inline-block;margin-top: 10px!important;"> Both</h5><br>
+
+<input type="radio" name="gender" value="male"><h5 style="padding-left:2%; display: inline-block;"> Male</h5><br>
+<input type="radio" name="gender" value="female"><h5 style="padding-left:2%; display: inline-block;margin-top: 10px!important;">Female</h5><br>
+<input type="radio" name="gender" value="both" checked><h5 style="padding-left:2%; display: inline-block;margin-top: 10px!important;"> Both</h5><br>
 
 </div>
 

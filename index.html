@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+<link href="https://evofitness.no/assets/evo-theme/default/favicon-9430b57a7f69d576bddb2eafe57df145.png" rel="shortcut icon" type="image/vnd.microsoft.icon">
+<link rel="stylesheet" type="text/css" href="src/CSS/style.css">
+<link rel="stylesheet" type="text/css" href="src/CSS/bootstrap.css">
+<link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=PT+Sans:400,400i,700,700i" rel="stylesheet">
+<meta name="description" content="EVO Music Buddy" />
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+<title>EVO Music Buddy</title>
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+<script>
+$(function (){
+inviteable_friends = [];
+authObject = null;
+me = null;
+
+$('#invite_friends_button').on('click', function(e) {
+    FB.ui({
+        method: 'apprequests',
+        message: "You have been invited by " + me.name,
+        to: inviteable_friends.toString() 
+    }, function(resp){
+        console.log(resp);
+    });
+});
+$('#connect-now').on('click', function(e){
+    FB.getLoginStatus(function(response) {
+        if (response.status === "connected" && false){
+            authObject = response.authResponse;
+        }
+        else{
+            FB.login(function(response){
+                if (response.status === "connected"){
+                    FB.api(
+                        "/" + response.authResponse.userID,
+                        function(resp){
+                            me = resp;
+                        });
+
+                    authObject = response.authResponse;
+                    FB.api(
+                        "/" + authObject.userID + "/permissions",
+                        function(response){
+                            console.log(response);
+                        }
+                       );
+                    FB.api(
+                        "/" + authObject.userID + "/invitable_friends?fields=name,picture.width(100).height(100)&limit=5",
+                        function (response) {
+                            if (response && !response.error) {
+                                $(".listfriends").children(".friendrow").remove();
+                                response.data.forEach(function(user){
+                                    $(".listfriends").prepend("<div class='friendrow col-xs-12'> \
+                                                             <img class='col-xs-4 fbimage' src=" + user.picture.data.url + "> \
+                                                             <div class='col-xs-8'><p>" + user.name + "</p></div> \
+                                                             </div>"
+                                                             );
+                                        inviteable_friends.push(user.id);
+                                   });
+                            }
+                        });
+                }
+            }, {scope: ["user_friends", "ads_management", "ads_read", "user_location", "user_hometown", "user_likes", "pages_show_list", "user_events"]});
+        }
+    });
+});
+$('[data-popup-open]').on('click', function(e)  {
+    var targeted_popup_class = jQuery(this).attr('data-popup-open');
+    $('[data-popup="' + targeted_popup_class + '"]').fadeIn(350);
+    e.preventDefault();
+});
+
+//----- CLOSE
+$('[data-popup-close]').on('click', function(e)  {
+    var targeted_popup_class = jQuery(this).attr('data-popup-close');
+    $('[data-popup="' + targeted_popup_class + '"]').fadeOut(350);
+
+    e.preventDefault();
+});
+});
+</script>
+</head>
+<body>
+    <script>
+    window.fbAsyncInit = function() {
+        FB.init({
+            appId      : '257174244703662',
+            xfbml      : true,
+            version    : 'v2.8'
+        });
+        FB.AppEvents.logPageView();
+    };
+    (function(d, s, id){
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) {return;}
+        js = d.createElement(s); js.id = id;
+        js.src = "https://connect.facebook.net/en_US/sdk.js";
+        fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
+    </script>
+
+<div class="container-fluid" style="padding:0;">
+<div class="container" style="display:block; padding-bottom:3%;">
+
+<div class="col-xs-12 text-center" style="padding-top:10%;">
+<h1>find your</h1>
+<h1 style="font-size:80px!important;">EVO Buddy</h1>
+</div>
+<div class="col-xs-12 text-center" style="padding:0%;">
+<img src="src/images/evobuddies.png" style="padding:8% 0% 8% 0%;">
+</div>
+
+<div class="col-xs-10 col-xs-offset-1 col-md-6 col-md-offset-3 text-center" style="padding:0%;">
+<form method="post" action="" style="padding:3% 5% 3% 5%;">
+    <div style="padding:1% 1% 8% 1%"><input type="checkbox" name="agreement" value="Bike"> By checking this box you agree to the terms of use: that we use your information to collect data and match with other Facebook users. (EDIT)<br><br><br>
+<input type="button" id="connect-now" value="connect now" data-popup-open="popup-fbinvite"  class="ctabutton">
+</form>
+</div>
+
+<div class="popup" data-popup="popup-fbinvite">
+    <div class="popup-inner">
+<div class="col-xs-12 col-sm-8 col-sm-offset-2" style="padding-top:10px;">
+        <h2>Invite your friends</h2>
+        <div class="listfriends">
+        <button id="invite_friends_button" class="ctabuttonsmall" style="font-size:12px;">
+            Invite friends
+        </button>
+        <a href="src/matchlanding.html" class="ctabuttonsmall">
+            Skip step
+        </a>
+        </div>
+        <p></p></div>
+        <p><a data-popup-close="popup-fbinvite" href="#">Close</a></p>
+        <a class="popup-close" data-popup-close="popup-fbinvite" href="#">x</a>
+    </div>
+</div>
+
+<div class="col-xs-12 text-center" style="padding:0%;">
+<img src="src/images/fbconnect.png" style="padding:8% 0% 0% 0%;">
+</div>
+
+</div>
+</div>
+
+
+<div class="container-fluid text-center" style="padding:0px; background:#dedede; position:fixed; bottom:0px; width:100%; margin-top:90px;">
+<img src="src/images/evologosmall.png" style="padding:25px;">
+</div>
+</body>
+</html>

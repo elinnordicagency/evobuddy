@@ -19,13 +19,11 @@
 		authObject = null;
 		me = null;
 
-
 		$(function () {
 			$("input[name=gender]:radio").change(function () {
 				build_list();
 			});
 		});
-
 
         function fixUser(user, likes = null){
             user.id = user.id;
@@ -72,8 +70,8 @@
 			user.same_likes = user.same_likes.length !== 0 ? user.same_likes.slice(0, 2) : [];
 			var gem = (same_likes / me.likes.length) * 100;
 			var multiplikator = 1 + mul * same_likes;
-
-			return (gem * multiplikator > 100) ? 100 : gem * multiplikator;
+			
+			return Math.ceil((gem * multiplikator > 100) ? 100 : gem * multiplikator);
 		}
 
 		function get_distance(lat1, lon1, lat2, lon2) {

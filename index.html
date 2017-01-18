@@ -29,49 +29,60 @@
 				});
 			});
 			$('#connect-now').on('click', function (e) {
-				FB.getLoginStatus(function (response) {
-					if (response.status === "connected" && false) {
-						authObject = response.authResponse;
-					} else {
-						FB.login(function (response) {
-							if (response.status === "connected") {
-								FB.api(
-									"/" + response.authResponse.userID,
-									function (resp) {
-										me = resp;
-									});
+				if($('input.js-agree').is(':checked')){
+					FB.getLoginStatus(function (response) {
+						if (response.status === "connected" && false) {
+							authObject = response.authResponse;
+						} else {
+							FB.login(function (response) {
+								if (response.status === "connected") {
+									FB.api(
+										"/" + response.authResponse.userID,
+										function (resp) {
+											me = resp;
+										});
 
-								authObject = response.authResponse;
-								FB.api(
-									"/" + authObject.userID + "/permissions",
-									function (response) {
-										console.log(response);
-									}
-								);
-								FB.api(
-									"/" + authObject.userID + "/invitable_friends?fields=name,picture.width(100).height(100)&limit=5",
-									function (response) {
-										if (response && !response.error) {
-											$(".listfriends").children(".friendrow").remove();
-											response.data.forEach(function (user) {
-												$(".listfriends").prepend("<div class='friendrow col-xs-12'> \
-                                                             <img class='col-xs-4 fbimage' src=" + user.picture.data.url + "> \
-                                                             <div class='col-xs-8'><p>" + user.name + "</p></div> \
-                                                             </div>");
-												inviteable_friends.push(user.id);
-											});
+									authObject = response.authResponse;
+									FB.api(
+										"/" + authObject.userID + "/permissions",
+										function (response) {
+											console.log(response);
 										}
-									});
-							}
-						}, {
-							scope: ["user_friends", "ads_management", "ads_read", "user_location", "user_hometown", "user_likes", "pages_show_list", "user_events"]
-						});
-					}
-				});
+									);
+									FB.api(
+										"/" + authObject.userID + "/invitable_friends?fields=name,picture.width(100).height(100)&limit=5",
+										function (response) {
+											if (response && !response.error) {
+												$(".listfriends").children(".friendrow").remove();
+												response.data.forEach(function (user) {
+													$(".listfriends").prepend("<div class='friendrow col-xs-12'> \
+																 <img class='col-xs-4 fbimage' src=" + user.picture.data.url + "> \
+																 <div class='col-xs-8'><p>" + user.name + "</p></div> \
+																 </div>");
+													inviteable_friends.push(user.id);
+												});
+											}
+										});
+								}
+							}, {
+								scope: ["user_friends", "ads_management", "ads_read", "user_location", "user_hometown", "user_likes", "pages_show_list", "user_events"]
+							});
+						}
+					});
+				}
 			});
 			$('[data-popup-open]').on('click', function (e) {
 				var targeted_popup_class = jQuery(this).attr('data-popup-open');
-				$('[data-popup="' + targeted_popup_class + '"]').fadeIn(350);
+				if(targeted_popup_class == 'popup-fbinvite'){
+					if($('input.js-agree').is(':checked')){
+						$('[data-popup="' + targeted_popup_class + '"]').fadeIn(350);
+					} else {
+						//
+					}
+				} else {
+					$('[data-popup="' + targeted_popup_class + '"]').fadeIn(350);
+				}
+				
 				e.preventDefault();
 			});
 
@@ -122,7 +133,7 @@
 			<div class="col-xs-10 col-xs-offset-1 col-md-6 col-md-offset-3 text-center" style="padding:0%;">
 				<form method="post" action="" style="padding:3% 5% 3% 5%;">
 					<div style="padding:1% 1% 8% 1%">
-						<input type="checkbox" name="agreement" value="Bike"> Jeg godkjenner at min brukerinformasjon innhentes og benyttes for å muliggjøre matching av profiler. EVO vil ikke publisere innhold uten min tillatelse.
+						<input type="checkbox" name="agreement" class="js-agree"> Jeg godkjenner at min brukerinformasjon innhentes og benyttes for å muliggjøre matching av profiler. EVO vil ikke publisere innhold uten min tillatelse.
 						<br><br><br>
 						<button id="connect-now" data-popup-open="popup-fbinvite" class="ctabutton">SØK ETTER MINE MATCHER</button>
 					</div>

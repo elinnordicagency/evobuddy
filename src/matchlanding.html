@@ -388,7 +388,7 @@
 					$popup.find('.js-invite-button').data('id', data.id);
 					$popup.find('.js-invite-button').data('isFake', data.isFake);
 					
-					$popup.find('.js-match-text').text('Gratulerer! Du og din potensielle treningspartner har mange felles interesser. Derfor har vi stor tro på at dere kommer til å lykkes med treningen, sammen. Nå gjenstår det bare for deg å knytte kontakt med din match. Lykke til!');
+					$popup.find('.js-match-text').text('Gratulerer! Du og din potensielle treningspartner har en del felles interesser. Vi har tro på at dere kommer til å lykkes med treningen, sammen. Nå gjenstår det bare for deg å knytte kontakt med din match. Lykke til!');
 					
 					if (data.matchPercent >= 50) {
 						$popup.find('.js-match-text').text('Gratulerer! Din potensielle treningspartner har så mye til felles med deg at dere med stor sannsynlighet kjøper morgenkaffen på samme hjørne.');
@@ -405,8 +405,6 @@
 					if (data.matchPercent >= 90) {
 						$popup.find('.js-match-text').text('Gratulerer! Din potensielle treningspartner har så mye til felles med deg at dere med stor sannsynlighet allerede er bestevenner.');
 					}
-					
-					
 				}
 				
 				e.preventDefault();

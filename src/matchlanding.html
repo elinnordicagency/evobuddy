@@ -65,8 +65,7 @@
 					}
 				}
 			}
-
-			user.same_likes = user.same_likes.length !== 0 ? user.same_likes.slice(0, 2) : [];
+			
 			var gem = (same_likes / me.likes.length) * 100;
 			var multiplikator = 1 + mul * same_likes;
 
@@ -114,7 +113,7 @@
 		function build_list() {
 			$(".matchcontainer").empty();
 			filter_list().forEach(function (user) {
-				$(".matchcontainer").append("<div class='col-xs-12'> \
+				var $newPerson = $("<div class='col-xs-12'> \
                                  <div class='col-xs-12' style='padding-bottom:3%; padding-left: 0;'> \
                                  <div class='col-xs-9' style='padding-left: 0;'> \
                                  <h3>" + user.name + "</h3> \
@@ -127,12 +126,14 @@
                                  <h5>" + user.gender + "</h5> \
                                  <h5>" + user.age + "</h5> \
                                  <h5>Similar interests / likes</h5> \
-                                 <h5> " + user.same_likes + " </h5> \
+                                 <h5> " + user.same_likes.slice(0, 2) + " </h5> \
                                  </div> \
                                  <div class='col-xs-3'> \
                                  <h3 class='matchpercent'>" + user.matchPercent + "%</h3> \
                                  <button class='ctabuttonsmall' data-popup-open='popup-match'>Finn ut mer</button> \
                                  </div>");
+				$newPerson.find('.ctabuttonsmall').data('person-data', user);
+				$(".matchcontainer").append($newPerson);
 			});
 		}
 
@@ -265,26 +266,30 @@
 
 			<div class="container-fluid" style="padding:0% 0% 4% 0%; min-height:100%;">
 				<div class="container text-center" style="padding: 5% 5% 8% 5%;">
-					<h1 class="matchpercent">79%</h1>
+					<h1 class="matchpercent js-match-percent"></h1>
 					<div class="col-xs-10 col-xs-offset-1 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3">
-						<p style="margin-top: 30px; margin-bottom: 30px;">Gratulerer! Du og din potensielle treningspartner har mange felles interesser. Derfor har vi stor tro på at dere kommer til å lykkes med treningen, sammen. Nå gjenstår det bare for deg å knytte kontakt med din match. Lykke til!</p>
+						<p style="margin-top: 30px; margin-bottom: 30px;" class="js-match-text">Gratulerer! Du og din potensielle treningspartner har mange felles interesser. Derfor har vi stor tro på at dere kommer til å lykkes med treningen, sammen. Nå gjenstår det bare for deg å knytte kontakt med din match. Lykke til!</p>
 					</div>
-					<div class="col-xs-12" style="padding: 0%;"><button class="ctabutton" onClick="alert('Facebook message modal should open here');">INVITER DIN EVO BUDDY</button></div>
+					<div class="col-xs-12" style="padding: 0%;"><button class="ctabutton js-invite-button" onClick="alert('Facebook message modal should open here');">INVITER DIN EVO BUDDY</button></div>
 				</div>
 
 				<div class="container-fluid" style="background:#d5d5d5; min-height:100%; padding-top:3%;padding-bottom:10%;">
 					<div class="container text-center">
 						<div class="col-xs-6 text-center" style="padding: 0;">
 							<div class="col-xs-10 col-xs-offset-1 text-center">
-								<div class="profileimgsmall"> </div>
-								<h5 style="padding:15px;">Profile text - Lorem ipsum dolor sit amet, cu sit elitr impedit dolores, consul cetero latine sea ut. Vim an paulo tempor suscipit, ex est purto altera anconvenire. Id meis usu munere, ornatus nostrum nominati his. </h5>
+								<div class="profileimgsmall">
+									<img src="" style="width: 100%; height: 100%; border-radius: 50%;" class="js-me-image" alt="">
+								</div>
+								<h5 style="padding:15px;" class="js-me-text"></h5>
 							</div>
 						</div>
 
 						<div class="col-xs-6 text-center" style="padding: 0;">
 							<div class="col-xs-10 col-xs-offset-1 text-center">
-								<div class="profileimgsmall"> </div>
-								<h5 style="padding:15px;">Profile text - Lorem ipsum dolor sit amet, cu sit elitr impedit dolores, consul cetero latine sea ut. Vim an paulo tempor suscipit, ex est purto altera anconvenire. Id meis usu munere, ornatus nostrum nominati his. </h5>
+								<div class="profileimgsmall">
+									<img src="" style="width: 100%; height: 100%; border-radius: 50%;" class="js-friend-image" alt="">
+								</div>
+								<h5 style="padding:15px;" class="js-friend-text"></h5>
 							</div>
 						</div>
 					</div>
@@ -344,15 +349,45 @@
 		(function($){
 			$(document.body).on('click', '[data-popup-open]', function (e) {
 				var $button = $(this),
-					$openPopups = $('.popup:visible');
+					$openPopups = $('.popup:visible'),
+					targeted_popup_class = $button.attr('data-popup-open'),
+					$popup = $('[data-popup="' + targeted_popup_class + '"]');
 				if ($openPopups.length) {
 					$openPopups.fadeOut(350, function(){
-						var targeted_popup_class = $button.attr('data-popup-open');
-						$('[data-popup="' + targeted_popup_class + '"]').fadeIn(350);
+						$popup.fadeIn(350);
 					});
 				} else {
-					var targeted_popup_class = $button.attr('data-popup-open');
-					$('[data-popup="' + targeted_popup_class + '"]').fadeIn(350);
+					$popup.fadeIn(350);
+				}
+				
+				if ($button.attr('data-popup-open') == 'popup-match') {
+					var data = $button.data('person-data');
+					$popup.find('.js-match-percent').text(data.matchPercent + '%');
+					$popup.find('.js-friend-image').attr('src', data.picture.data.url);
+					$popup.find('.js-me-image').attr('src', me.picture.data.url);
+					$popup.find('.js-friend-text').text(data.same_likes.join(', '));
+					$popup.find('.js-me-text').text(data.same_likes.join(', '));
+					$popup.find('.js-invite-button').data('id', data.id);
+					
+					$popup.find('.js-match-text').text('Gratulerer! Du og din potensielle treningspartner har mange felles interesser. Derfor har vi stor tro på at dere kommer til å lykkes med treningen, sammen. Nå gjenstår det bare for deg å knytte kontakt med din match. Lykke til!');
+					
+					if (data.matchPercent >= 50) {
+						$popup.find('.js-match-text').text('Gratulerer! Din potensielle treningspartner har så mye til felles med deg at dere med stor sannsynlighet kjøper morgenkaffen på samme hjørne.');
+					}
+					if (data.matchPercent >= 60) {
+						$popup.find('.js-match-text').text('Gratulerer! Din potensielle treningspartner har så mye til felles med deg at dere med stor sannsynlighet er hektet på samme serie på Netflix.');
+					}
+					if (data.matchPercent >= 70) {
+						$popup.find('.js-match-text').text('Gratulerer! Din potensielle treningspartner har så mye til felles med deg at dere med stor sannsynlighet får energi av den samme musikken.');
+					}
+					if (data.matchPercent >= 80) {
+						$popup.find('.js-match-text').text('Gratulerer! Din potensielle treningspartner har så mye til felles med deg at dere med stor sannsynlighet deler både venner og stamsteder.');
+					}
+					if (data.matchPercent >= 90) {
+						$popup.find('.js-match-text').text('Gratulerer! Din potensielle treningspartner har så mye til felles med deg at dere med stor sannsynlighet allerede er bestevenner.');
+					}
+					
+					
 				}
 				
 				e.preventDefault();

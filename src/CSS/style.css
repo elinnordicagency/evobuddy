@@ -270,7 +270,7 @@ outline:none;
 text-decoration:none;
 font-family: 'Montserrat',sans-serif!important;
 font-weight:500;
-font-size:17px!important;
+font-size:15px!important;
 margin-top:15px;
 }
 
@@ -457,7 +457,7 @@ h3.matchpercent{
 font-size: 62px!important;
 font-weight: 700!important;
 letter-spacing: -2px;
-margin-bottom: 0px;
+margin-bottom: 12px;
 }
 
 h1.matchpercent{

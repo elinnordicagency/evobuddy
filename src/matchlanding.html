@@ -1,127 +1,123 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-<link href="https://evofitness.no/assets/evo-theme/default/favicon-9430b57a7f69d576bddb2eafe57df145.png" rel="shortcut icon" type="image/vnd.microsoft.icon">
-<link rel="stylesheet" type="text/css" href="CSS/style.css">
-<link rel="stylesheet" type="text/css" href="CSS/bootstrap.css">
-<link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css?family=PT+Sans:400,400i,700,700i" rel="stylesheet">
-<meta name="description" content="EVO Music Buddy" />
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script src="//netdna.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
-<title>EVO Buddy</title>
-
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<script>
-all_users = [];
-inviteable_friends = [];
-authObject = null;
-me = null;
+<head>
+	<meta charset="utf-8">
+	<link href="https://evofitness.no/assets/evo-theme/default/favicon-9430b57a7f69d576bddb2eafe57df145.png" rel="shortcut icon" type="image/vnd.microsoft.icon">
+	<link rel="stylesheet" type="text/css" href="CSS/style.css">
+	<link rel="stylesheet" type="text/css" href="CSS/bootstrap.css">
+	<link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=PT+Sans:400,400i,700,700i" rel="stylesheet">
+	<meta name="description" content="EVO Music Buddy" />
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+	<script src="//netdna.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+	<title>EVO Buddy</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<script>
+		all_users = [];
+		inviteable_friends = [];
+		authObject = null;
+		me = null;
 
 
-$(function (){
-    $("input[name=gender]:radio").change(function () {
-        build_list();
-    });
-});
+		$(function () {
+			$("input[name=gender]:radio").change(function () {
+				build_list();
+			});
+		});
 
 
-function fixUser(user, likes = null){
-    user.id = user.id;
-    user.name = user.name;
-    user.picture = user.picture;
-    user.gender = (typeof user.gender  === 'undefined') ? "unknown" : user.gender;
-    user.age = (typeof user.age_range === 'undefined') ? "unknown" : user.age_range.min;
+        function fixUser(user, likes = null){
+            user.id = user.id;
+            user.name = user.name;
+            user.picture = user.picture;
+            user.gender = (typeof user.gender  === 'undefined') ? "unknown" : user.gender;
+            user.age = (typeof user.age_range === 'undefined') ? "unknown" : user.age_range.min;
 
-    user.same_likes = [];
-    user.location = (typeof user.location === 'undefined') ? null : user.location;
+            user.same_likes = [];
+            user.location = (typeof user.location === 'undefined') ? null : user.location;
 
-    if (user.location && me.location && me.location.location.latitude && me.location.location.longitude && user.location.location.latitude && user.location.location.longitude){
-        user.distance = get_distance(me.location.location.latitude, me.location.location.longitude, user.location.location.latitude, user.location.location.longitude);
-    }
-
-    user.likes = likes;
-
-    if (!likes){
-        user.matchPercent = 0;
-    }
-    else{
-        console.error(user);
-        user.matchPercent = get_match_percentage(user);
-    }
-
-    return user;
-}
-
-function get_match_percentage(user){
-    var likes = me.likes.length;
-    var mul = 0.25;
-    var same_likes = 0 ;
-
-
-    for (var i = 0;i < user.likes.length; i++){
-        for (var i2=0;i2 < me.likes.length; i2++){
-            if (user.likes[i].id === me.likes[i2].id){
-                same_likes++;
-                user.same_likes.push(user.likes[i].name);
+            if (user.location && me.location && me.location.location.latitude && me.location.location.longitude && user.location.location.latitude && user.location.location.longitude){
+                user.distance = get_distance(me.location.location.latitude, me.location.location.longitude, user.location.location.latitude, user.location.location.longitude);
             }
-        }
-    }
 
-    user.same_likes = user.same_likes.length !== 0 ? user.same_likes.slice(0,2) : [];
-    var gem = (same_likes / me.likes.length) * 100 ;
-    var multiplikator = 1 + mul * same_likes;
+            user.likes = likes;
 
-    return (gem * multiplikator > 100) ? 100 : gem * multiplikator;
-}
+            if (!likes){
+                user.matchPercent = 0;
+            }
+            else{
+                console.error(user);
+                user.matchPercent = get_match_percentage(user);
+            }
 
-function get_distance(lat1, lon1, lat2, lon2){
-
-    var R = 6371e3;
-    var φ1 = lat1 * Math.PI / 180;
-    var φ2 = lat2 * Math.PI / 180;
-    var Δφ = (lat2-lat1) * Math.PI / 180;
-    var Δλ = (lon2-lon1) * Math.PI / 180;
-
-    var a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
-                Math.cos(φ1) * Math.cos(φ2) *
-                        Math.sin(Δλ/2) * Math.sin(Δλ/2);
-    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-    var d = R * c;
-    return d
-}
-
-function filter_list(){
-    console.log($('input[name=gender]:checked').val());
-
-    var users = all_users.filter(function(value){
-        var gender = $('input[name=gender]:checked').val();
-        if (gender==="both"){
-            return true
-        }
-        else {
-            return value.gender === gender
+            return user;
         }
 
-    });
+		function get_match_percentage(user) {
+			var likes = me.likes.length;
+			var mul = 0.25;
+			var same_likes = 0;
 
-    return users.sort(function(a, b){
-        if (a.matchPercent < b.matchPercent)
-            return 1;
-        if (a.matchPercent > b.matchPercent)
-            return -1;
-         return 0;
 
-    })
-}
+			for (var i = 0; i < user.likes.length; i++) {
+				for (var i2 = 0; i2 < me.likes.length; i2++) {
+					if (user.likes[i].id === me.likes[i2].id) {
+						same_likes++;
+						user.same_likes.push(user.likes[i].name);
+					}
+				}
+			}
 
-function build_list(){
-    $(".matchcontainer").empty();
-    filter_list().forEach(function(user){
-        $(".matchcontainer").append("<div class='col-xs-12'> \
+			user.same_likes = user.same_likes.length !== 0 ? user.same_likes.slice(0, 2) : [];
+			var gem = (same_likes / me.likes.length) * 100;
+			var multiplikator = 1 + mul * same_likes;
+
+			return (gem * multiplikator > 100) ? 100 : gem * multiplikator;
+		}
+
+		function get_distance(lat1, lon1, lat2, lon2) {
+			var R = 6371e3;
+			var φ1 = lat1.toRadians();
+			var φ2 = lat2.toRadians();
+			var Δφ = (lat2 - lat1).toRadians();
+			var Δλ = (lon2 - lon1).toRadians();
+
+			var a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+				Math.cos(φ1) * Math.cos(φ2) *
+				Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+			var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+			var d = R * c;
+			return d
+		}
+
+		function filter_list() {
+			console.log($('input[name=gender]:checked').val());
+
+			var users = all_users.filter(function (value) {
+				var gender = $('input[name=gender]:checked').val();
+				if (gender === "both") {
+					return true
+				} else {
+					return value.gender === gender
+				}
+
+			});
+
+			return users.sort(function (a, b) {
+				if (a.matchPercent < b.matchPercent)
+					return 1;
+				if (a.matchPercent > b.matchPercent)
+					return -1;
+				return 0;
+
+			})
+		}
+
+		function build_list() {
+			$(".matchcontainer").empty();
+			filter_list().forEach(function (user) {
+				$(".matchcontainer").append("<div class='col-xs-12'> \
                                  <div class='col-xs-12' style='padding-bottom:3%; padding-left: 0;'> \
                                  <div class='col-xs-9' style='padding-left: 0;'> \
                                  <h3>" + user.name + "</h3> \
@@ -139,123 +135,129 @@ function build_list(){
                                  <div class='col-xs-3'> \
                                  <h3 class='matchpercent'>" + user.matchPercent + "%</h3> \
                                  <button class='ctabuttonsmall'>More info</button> \
-                                 </div>"
-                                 );
-    });
-}
+                                 </div>");
+			});
+		}
 
-function pushUser(user){
-    all_users.push(user);
-    build_list();
-}
-window.fbAsyncInit = function() {
-    FB.init({
-        appId      : '257174244703662',
-        xfbml      : true,
-        version    : 'v2.8'
-    });
-    FB.AppEvents.logPageView();
-    FB.getLoginStatus(function(response) {
-        if (response.status === "connected" && false){
-            authObject = response.authResponse;
-                FB.api(
-                    "/" + authObject.userID + "/permissions",
-                    function(response){
-                        console.log(response);
-                    }
-                   );
-        }
-        else{
-            FB.login(function(response){
-                if (response.status === "connected"){
-                    var authObject = response.authResponse;
-                    FB.api('/me?fields=name,picture.type(large),gender,age_range,location.fields(location)',
-                        function(me_response){
-                            me = me_response;
-                            console.log(me);
-                            $("#profile_picture").attr(
-                                "src",
-                                me.picture.data.url)
-                            FB.api('/' + authObject.userID + "/likes?limit=100",
-                                function(likes_response){
-                                    me.likes = likes_response.data;
-                                });
-                            FB.api(
-                                "/" + authObject.userID + "/friends?fields=name,gender,age_range,picture.type(large),location.fields(location)",
-                                function(response){
-                                    response.data.forEach(function(user){
-                                        FB.api('/' + user.id + "/likes?limit=100",
-                                            function(likes_response){
-                                                user = fixUser(user, likes_response.data);
-                                                pushUser(user);
-                                            });
-                                    });
-                                });
-                        });
-                    FB.api(
-                        "/" + authObject.userID + "/invitable_friends?fields=name,picture.type(large)",
-                        function (response) {
-                            if (response && !response.error) {
-                                console.log("inviteable friends", response);
-                                response.data.forEach(function(user){
-                                    user = fixUser(user);
-                                    pushUser(user);
-                                });
-                        }
-                    });
-                }
-            }, {scope: ["user_friends", "ads_management", "ads_read", "read_custom_friendlists"]});
-        }
-    });
-};
-(function(d, s, id){
-    var js, fjs = d.getElementsByTagName(s)[0];
-    if (d.getElementById(id)) {return;}
-    js = d.createElement(s); js.id = id;
-    js.src = "https://connect.facebook.net/en_US/sdk.js";
-    fjs.parentNode.insertBefore(js, fjs);
-}(document, 'script', 'facebook-jssdk'));
-</script>
-
+		function pushUser(user) {
+			all_users.push(user);
+			build_list();
+		}
+		window.fbAsyncInit = function () {
+			FB.init({
+				appId: '257174244703662', //'398708280464193',
+				xfbml: true,
+				version: 'v2.8'
+			});
+			FB.AppEvents.logPageView();
+			FB.getLoginStatus(function (response) {
+				if (response.status === "connected" && false) {
+					authObject = response.authResponse;
+					FB.api(
+						"/" + authObject.userID + "/permissions",
+						function (response) {
+							console.log(response);
+						}
+					);
+				} else {
+					FB.login(function (response) {
+						if (response.status === "connected") {
+							var authObject = response.authResponse;
+							FB.api('/me?fields=name,picture.type(large),gender,age_range,location.fields(location)',
+								function (me_response) {
+									me = me_response;
+									console.log(me);
+									$("#profile_picture").attr(
+										"src",
+										me.picture.data.url)
+									FB.api('/' + authObject.userID + "/likes?limit=100",
+										function (likes_response) {
+											me.likes = likes_response.data;
+										});
+									FB.api(
+										"/" + authObject.userID + "/friends?fields=name,gender,age_range,picture.type(large),location.fields(location)",
+										function (response) {
+											response.data.forEach(function (user) {
+												FB.api('/' + user.id + "/likes?limit=100",
+													function (likes_response) {
+														user = fixUser(user, likes_response.data);
+														pushUser(user);
+													});
+											});
+										});
+								});
+							FB.api(
+								"/" + authObject.userID + "/invitable_friends?fields=name,picture.type(large)",
+								function (response) {
+									if (response && !response.error) {
+										console.log("inviteable friends", response);
+										response.data.forEach(function (user) {
+											user = fixUser(user);
+											pushUser(user);
+										});
+									}
+								});
+						}
+					}, {
+						scope: ["user_friends", "ads_management", "ads_read", "read_custom_friendlists"]
+					});
+				}
+			});
+		};
+		(function (d, s, id) {
+			var js, fjs = d.getElementsByTagName(s)[0];
+			if (d.getElementById(id)) {
+				return;
+			}
+			js = d.createElement(s);
+			js.id = id;
+			js.src = "https://connect.facebook.net/en_US/sdk.js";
+			fjs.parentNode.insertBefore(js, fjs);
+		}(document, 'script', 'facebook-jssdk'));
+	</script>
 </head>
-
 <body>
+	<div class="container-fluid" style="padding:0;">
+		<div class="container" style="display:block;">
 
+			<div class="col-xs-12 col-sm-8 pull-right" style="padding: 5% 4% 3% 4%;">
+				<h1 style="text-transform: none;">DINE POTENSIELLE TRENINGSPARTNERE</h1>
+			</div>
 
-<div class="container-fluid" style="padding:0;">
-<div class="container" style="display:block;">
+			<div class="col-xs-10 col-xs-offset-1 col-sm-offset-0 col-sm-4 pull-left" style="padding-top:5%; padding:30px;margin-bottom:-100px;">
+				<img id="profile_picture" class="profileimgbig">
+			</div>
 
-<div class="col-xs-12 col-sm-8 pull-right" style="padding: 5% 4% 3% 4%;">
-<h1 style="">Here are your potential workout buddies <Firstname></h1>
-</div>
+		</div>
+	</div>
 
-<div class="col-xs-10 col-xs-offset-1 col-sm-offset-0 col-sm-4 pull-left" style="padding-top:5%; padding:30px;margin-bottom:-100px;">
-<img id="profile_picture" class="profileimgbig">
-</div>
+	<div class="container-fluid" style="background:#d5d5d5; padding-bottom: 3%;">
+		<div class="container" style="display:block; padding:5% 0% 0% 0%;">
 
-</div></div>
+			<div class="col-xs-12 col-sm-8 pull-right matchcontainer">
 
+			</div>
 
-<div class="container-fluid" style="background:#d5d5d5; padding-bottom: 3%;">
-<div class="container" style="display:block; padding:5% 0% 0% 0%;">
+			<div class="col-xs-12 col-sm-4 pull-left" id="sidebar" style="padding:0px 30px 30px 30px;">
+				<h3 style="margin-top: 50px;">Filter</h3>
 
-<div class="col-xs-12 col-sm-8 pull-right matchcontainer">
+				<input type="radio" name="gender" value="male">
+				<h5 style="padding-left:2%; display: inline-block;"> Menn</h5>
+				<br>
+				<input type="radio" name="gender" value="female">
+				<h5 style="padding-left:2%; display: inline-block;margin-top: 10px!important;">Kvinner</h5>
+				<br>
+				<input type="radio" name="gender" value="both" checked>
+				<h5 style="padding-left:2%; display: inline-block;margin-top: 10px!important;"> Begge</h5>
+				<br>
 
-</div>
+			</div>
 
-<div class="col-xs-12 col-sm-4 pull-left" id="sidebar" style="padding:0px 30px 30px 30px;">
-<h3 style="margin-top: 50px;">Filter</h3>
+		</div>
+	</div>
 
-<input type="radio" name="gender" value="male"><h5 style="padding-left:2%; display: inline-block;"> Male</h5><br>
-<input type="radio" name="gender" value="female"><h5 style="padding-left:2%; display: inline-block;margin-top: 10px!important;">Female</h5><br>
-<input type="radio" name="gender" value="both" checked><h5 style="padding-left:2%; display: inline-block;margin-top: 10px!important;"> Both</h5><br>
-
-</div>
-
-</div></div>
-
-<div class="container-fluid text-center" style="padding:0px; background:#dedede; position:fixed; bottom:0px; width:100%; margin-top:90px;">
-<img src="images/evologosmall.png" style="padding:25px;">
-</div>
+	<div class="container-fluid text-center" style="padding:0px; background:#dedede; position:fixed; bottom:0px; width:100%; margin-top:90px;">
+		<img src="images/evologosmall.png" style="padding:25px;">
+	</div>
 </body>
 </html>

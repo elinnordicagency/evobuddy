@@ -480,7 +480,7 @@ form p {
 }
 
 .profileimgbig {
-	width: 100%;
+	width: 320px;
 	height: 320px;
 	background: #ffffff;
 	border-radius: 50%;
@@ -499,7 +499,7 @@ form p {
 
 @media (max-width: 768px) {
 	.profileimgbig {
-		width: 100%;
+		width: 180px;
 		height: 180px;
 		background: #ffffff;
 		border-radius: 50%;
@@ -507,7 +507,7 @@ form p {
 		padding: 15px;
 	}
 	.profileimgsmall {
-		width: 100%;
+		width: 100px;
 		height: 100px;
 		background: #ffffff;
 		border-radius: 50%;

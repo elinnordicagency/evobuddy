@@ -4,8 +4,6 @@
 
 html {
 	background-repeat: no-repeat;
-	height: 100%;
-	min-height: 100%!important;
 	-webkit-background-size: cover;
 	-moz-background-size: cover;
 	-o-background-size: cover;
@@ -14,6 +12,8 @@ html {
 }
 
 body {
+	min-height: 100%;
+	min-height: 100vh!important;
 	background: rgba(218, 8, 99, 1);
 	background: -moz-linear-gradient(left, rgba(218, 8, 99, 1) 0%, rgba(38, 14, 63, 1) 100%);
 	background: -webkit-gradient(left top, right bottom, color-stop(0%, rgba(218, 8, 99, 1)), color-stop(100%, rgba(38, 14, 63, 1)));
@@ -23,8 +23,6 @@ body {
 	background: linear-gradient(to right, -45deg, rgba(218, 8, 99, 1) 0%, rgba(38, 14, 63, 1) 100%);
 	filter: progid: DXImageTransform.Microsoft.gradient( startColorstr='#da0863', endColorstr='#260e3f', GradientType=1);
 	background-repeat: no-repeat;
-	height: 100%;
-	min-height: 100%!important;
 	-webkit-background-size: cover;
 	-moz-background-size: cover;
 	-o-background-size: cover;

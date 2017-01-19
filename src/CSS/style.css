@@ -254,6 +254,7 @@ form p {
 	text-transform: uppercase;
 	cursor: pointer;
 	display: inline-block;
+	line-height: 1.2;
 }
 
 .ctabutton:hover {

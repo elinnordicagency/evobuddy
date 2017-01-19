@@ -493,7 +493,7 @@ form p {
 	height: 164px;
 	background: #ffffff;
 	border-radius: 50%;
-	margin: 3% auto 0 auto;
+	margin: 1% auto 0 auto;
 	padding: 15px;
 }
 
@@ -512,7 +512,7 @@ form p {
 		height: 100px;
 		background: #ffffff;
 		border-radius: 50%;
-		margin-top: 3%;
+		margin-top: 1%;
 		padding: 15px;
 	}
 }
@@ -533,5 +533,11 @@ h1.matchpercent {
 .matchcontainer {
 	overflow-y: scroll;
 	height: 800px;
-	padding: 0% 4% 4% 4%;
+	padding: 0% 4% 10% 4%;
 }
+.matchrow {
+	    padding-top: 3%;
+    padding-bottom: 5%;
+    border-bottom: 1px solid #a4a4a4;
+}
+

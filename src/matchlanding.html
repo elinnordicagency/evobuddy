@@ -41,6 +41,24 @@
                     });
                 }
             });
+            $("#refer-code").on("input", function(){
+                console.log(this);
+                $('#textarea-copy').val("Hei! Vil du bli min EVO Buddy? Trening med en venn er både hyggelig og motiverende, og jeg vil gjerne trene sammen med deg. Bruk koden " + $(this).val() + " så får du et uforpliktende medlemskap hos EVO for kun 99,- ut februar. I tillegg får vi en gratis DUO-time hos en personlig trener, som gir oss en kjempegod start. Blir du med?");
+            });
+            $("#textarea-copy").on('keypress', function(e){
+                e.preventDefault();
+            });
+            $(".js-copy-button").on('click', function(){
+                $('#textarea-copy').select();
+                try {
+                    var successful = document.execCommand('copy');
+                    var msg = successful ? 'successful' : 'unsuccessful';
+                    console.log('Copying text command was ' + msg);
+                } catch (err) {
+                    console.log('Oops, unable to copy');
+                }
+
+            });
 		});
 		function fixUser(user, likes) {
 
@@ -171,7 +189,7 @@
 		}
 		window.fbAsyncInit = function () {
 			FB.init({
-				appId:'392707531064268',
+				appId: '392707531064268',
 				xfbml: true,
 				version: 'v2.8'
 			});
@@ -297,8 +315,31 @@
 					<div class="col-xs-10 col-xs-offset-1 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3">
 						<p style="margin-top: 30px; margin-bottom: 30px;" class="js-match-text">Gratulerer! Du og din potensielle treningspartner har mange felles interesser. Derfor har vi stor tro på at dere kommer til å lykkes med treningen, sammen. Nå gjenstår det bare for deg å knytte kontakt med din match. Lykke til!</p>
 					</div>
-					<div class="col-xs-12" style="padding: 0%;"><button class="ctabutton js-invite-button">INVITER DIN EVO BUDDY</button></div>
-				</div>
+                    <div class="col-xs-12 col-sm-10 col-sm-offset-1" style="padding: 0%;margin-top:5%;">
+                        <div class="col-xs-12 col-sm-7" style="padding: 3% 0% 3% 0%;">
+                        <p style="text-align:left;">Gå til din medlemside på <a href="https://me.evofitness.no/login" target="_blank">EVOfitness.no</a> og hent din vervekode som gir deg en måned gratis trening, eller fortsett uten dersom du bare vil invitere din nye EVO buddy med et medlemskap for 99kr ut februar.</p>
+                        </div>
+                        <div class="col-xs-12" style="padding: 0%;">
+                        <div class="col-xs-4" style="background:#ffffff;padding:40px;padding:40px; margin-top:30px margin-bottom:30px;">
+                        <input type="text" id="refer-code" value="XXXXX" style="color:#474747!important;text-align:center;">
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-7" style="padding: 3% 0% 3% 0%;">
+                        <p style="text-align:left;">Kopier teksten (som du selvsagt kan endre om du vil) og klikk på «Inviter EVO Buddy» knappen.</p>
+                    </div>
+                    <div class="col-xs-12" style="background:#ffffff;padding:40px; margin-top:30px margin-bottom:30px;">
+                        <textarea id="textarea-copy" rows="5" style="resize:none;width:100%!important; color:#474747!important;">Hei! Vil du bli min EVO Buddy? Trening med en venn er både hyggelig og motiverende, og jeg vil gjerne trene sammen med deg. Bruk koden xxxxx så får du et uforpliktende medlemskap hos EVO for kun 99,- ut februar. I tillegg får vi en gratis DUO-time hos en personlig trener, som gir oss en kjempegod start. Blir du med?</textarea>
+                    </div>
+                    <div class="col-xs-12" style="padding: 3% 0% 3% 0%;">
+                        <div class="col-xs-12 col-sm-4 text-left" style="padding: 0%;">
+                        <button class="js-copy-button ctabutton">Kopier</button>
+                        </div>
+                        <div class="col-xs-12 col-xs-offset-0 col-sm-7 col-sm-offset-1 text-right" style="padding: 0%;">
+                        <button class="js-invite-button ctabutton">INVITER DIN EVO BUDDY</button>
+                    </div>
+                    </div>
+                    </div>
+                    </div>
 
 				<div class="container-fluid" style="background:#d5d5d5; min-height:100%; padding-top:3%;padding-bottom:10%;">
 					<div class="container text-center">

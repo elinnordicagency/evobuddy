@@ -14,62 +14,41 @@
 	<title>EVO Buddy</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<script>
+	inviteable_friends = [];
+	authObject = null;
+	me = null;
+
+	function loggingIn(){
+		FB.getLoginStatus(function (response) {
+            authObject = response.authResponse;
+            FB.api(
+                "/" + authObject.userID + "/invitable_friends?fields=name,picture.width(100).height(100)&limit=5",
+                function (response) {
+                    if (response && !response.error) {
+                        $(".listfriends").children(".friendrow").remove();
+                        response.data.forEach(function (user) {
+                            $(".listfriends").prepend("<div class='friendrow col-xs-12'> \
+                                         <img class='col-xs-4 fbimage' src=" + user.picture.data.url + "> \
+                                         <div class='col-xs-8'><p>" + user.name + "</p></div> \
+                                         </div>"
+                                         );
+                            inviteable_friends.push(user.id);
+                        });
+                    }
+                });
+            $('[data-popup="popup-fbinvite"]').fadeIn(350);
+        });
+	    }
 		$(function () {
-			inviteable_friends = [];
-			authObject = null;
-			me = null;
 
 			$('#invite_friends_button').on('click', function (e) {
 				FB.ui({
 					method: 'apprequests',
-					message: "You have been invited by " + me.name,
+					message: "You have been invited to EVObuddy",
 					to: inviteable_friends.toString()
 				}, function (resp) {
-					console.log(resp);
+                    window.location.href = "/src/matchlanding.html";
 				});
-			});
-			$('#connect-now').on('click', function (e) {
-				if($('input.js-agree').is(':checked')){
-					FB.getLoginStatus(function (response) {
-						if (response.status === "connected" && false) {
-							authObject = response.authResponse;
-						} else {
-							FB.login(function (response) {
-								if (response.status === "connected") {
-									FB.api(
-										"/" + response.authResponse.userID,
-										function (resp) {
-											me = resp;
-										});
-
-									authObject = response.authResponse;
-									FB.api(
-										"/" + authObject.userID + "/permissions",
-										function (response) {
-											console.log(response);
-										}
-									);
-									FB.api(
-										"/" + authObject.userID + "/invitable_friends?fields=name,picture.width(100).height(100)&limit=5",
-										function (response) {
-											if (response && !response.error) {
-												$(".listfriends").children(".friendrow").remove();
-												response.data.forEach(function (user) {
-													$(".listfriends").prepend("<div class='friendrow col-xs-12'> \
-																 <img class='col-xs-4 fbimage' src=" + user.picture.data.url + "> \
-																 <div class='col-xs-8'><p>" + user.name + "</p></div> \
-																 </div>");
-													inviteable_friends.push(user.id);
-												});
-											}
-										});
-								}
-							}, {
-								scope: ["user_friends", "user_location", "user_hometown", "user_likes"]
-							});
-						}
-					});
-				}
 			});
 			$('[data-popup-open]').on('click', function (e) {
 				var targeted_popup_class = jQuery(this).attr('data-popup-open');
@@ -106,6 +85,11 @@
 				version: 'v2.8'
 			});
 			FB.AppEvents.logPageView();
+		    FB.getLoginStatus(function (response) {
+                if (response.status === "connected"){
+                    window.location.href = "src/matchlanding.html";
+                }
+            });
 		};
 		(function (d, s, id) {
 			var js, fjs = d.getElementsByTagName(s)[0];
@@ -137,7 +121,7 @@
 					<div style="padding:1% 1% 8% 1%">
 						<input type="checkbox" name="agreement" class="js-agree"> Jeg godkjenner at min brukerinformasjon innhentes og benyttes for å muliggjøre matching av profiler. EVO vil ikke publisere innhold uten min tillatelse.
 						<br><br><br>
-						<button id="connect-now" data-popup-open="popup-fbinvite" class="fb-login-button" data-size="xlarge">Logg inn og finn match</button>
+						<div data-size="xlarge" style="background: #da0863;" scope="user_friends,user_location,user_hometown,user_likes"class="fb-login-button" onlogin="loggingIn">SØK ETTER MINE MATCHER</div>
 					</div>
 				</form>
 				</div>

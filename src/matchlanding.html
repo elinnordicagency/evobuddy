@@ -23,6 +23,16 @@
 			$("input[name=gender]:radio").change(function () {
 				build_list();
 			});
+            $("#log-out-button").on('click', function(){
+                FB.logout(function (response) {
+                    if (window.location.hostname === "evobuddy.no"){
+                        window.location.href = "/";
+                    }
+                    else {
+                        window.location.href = ("https://apps.facebook.com/392707531064268/");
+                    }
+                });
+            });
             $(".js-invite-button").on('click', function(){
                 if (!$(this).data('isFake')){
                     FB.ui({
@@ -42,7 +52,6 @@
                 }
             });
             $("#refer-code").on("input", function(){
-                console.log(this);
                 $('#textarea-copy').val("Hei! Vil du bli min EVO Buddy? Trening med en venn er både hyggelig og motiverende, og jeg vil gjerne trene sammen med deg. Bruk koden " + $(this).val() + " så får du et uforpliktende medlemskap hos EVO for kun 99,- ut februar. I tillegg får vi en gratis DUO-time hos en personlig trener, som gir oss en kjempegod start. Blir du med?");
             });
             $("#textarea-copy").on('keypress', function(e){
@@ -53,9 +62,7 @@
                 try {
                     var successful = document.execCommand('copy');
                     var msg = successful ? 'successful' : 'unsuccessful';
-                    console.log('Copying text command was ' + msg);
                 } catch (err) {
-                    console.log('Oops, unable to copy');
                 }
 
             });
@@ -92,7 +99,6 @@
 			if (!likes) {
 				user.matchPercent = 0;
 			} else {
-				console.error(user);
 				user.matchPercent = get_match_percentage(user);
 			}
 
@@ -136,8 +142,6 @@
 		}
 
 		function filter_list() {
-			console.log($('input[name=gender]:checked').val());
-
 			var users = all_users.filter(function (value) {
 				var gender = $('input[name=gender]:checked').val();
 				if (gender === "both") {
@@ -189,7 +193,7 @@
 		}
 		window.fbAsyncInit = function () {
 			FB.init({
-				appId: '392707531064268',
+				appId:'392707531064268',
 				xfbml: true,
 				version: 'v2.8'
 			});
@@ -197,12 +201,6 @@
 			FB.getLoginStatus(function (response) {
 				if (response.status === "connected" && false) {
 					authObject = response.authResponse;
-					FB.api(
-						"/" + authObject.userID + "/permissions",
-						function (response) {
-							console.log(response);
-						}
-					);
 				} else {
 					FB.login(function (response) {
 						if (response.status === "connected") {
@@ -210,7 +208,6 @@
 							FB.api("/me?fields=name,picture.type(large),gender,birthday,location.fields(location)",
 								function (me_response) {
 									me = me_response;
-									console.log(me);
 									$("#profile_picture").attr(
 										"src",
 										me.picture.data.url)
@@ -234,7 +231,6 @@
 								"/" + authObject.userID + "/invitable_friends?fields=name,picture.type(large)",
 								function (response) {
 									if (response && !response.error) {
-										console.log("inviteable friends", response);
 										response.data.forEach(function (user) {
 											user = fixUser(user);
 											pushUser(user);
@@ -263,8 +259,10 @@
 
 <body>
 	<div class="container-fluid" style="padding:0;">
+        <div style="padding: 1% 1% 1% 1%">
+            <button id="log-out-button" class="ctabutton">Logg ut</button>
+        </div>
 		<div class="container" style="display:block;">
-
 			<div class="col-xs-12 col-sm-8 pull-right" style="padding: 5% 4% 3% 4%;">
 				<h1 style="text-transform: none;">DINE POTENSIELLE TRENINGSPARTNERE</h1>
 			</div>

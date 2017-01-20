@@ -94,10 +94,10 @@ p {
 	outline: none;
 	text-decoration: none;
 	font-family: 'PT Sans', sans-serif;
-	font-size: 14.5px;
+	font-size: 18.5px!important;
 	letter-spacing: 1.3px;
 	line-height: 140%;
-	color: #ffffff;
+	color: #ffffff!important;
 }
 
 @media (max-width: 768px) {
@@ -106,10 +106,34 @@ p {
 	outline: none;
 	text-decoration: none;
 	font-family: 'PT Sans', sans-serif;
-	font-size: 19px!important;
+	font-size: 24px!important;
 	letter-spacing: 1.3px;
 	line-height: 140%;
-	color: #ffffff;
+	color: #ffffff!important;
+}
+	}
+
+p.small {
+	border: none;
+	outline: none;
+	text-decoration: none;
+	font-family: 'PT Sans', sans-serif;
+	font-size: 14px!important;
+	letter-spacing: 1.3px;
+	line-height: 140%;
+	color: #ffffff!important;
+}
+
+@media (max-width: 768px) {
+p.small {
+	border: none;
+	outline: none;
+	text-decoration: none;
+	font-family: 'PT Sans', sans-serif;
+	font-size: 18px!important;
+	letter-spacing: 1.3px;
+	line-height: 140%;
+	color: #ffffff!important;
 }
 	}
 

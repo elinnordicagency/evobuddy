@@ -627,10 +627,10 @@ h1.matchpercent {
 }
 
 #fb_login-button{
-    background: #3f5b96;
+    background: #3f5b96!important;
     border-radius: 0px;
     color: #ffffff!important;
-    padding: 20px 80px;
+    padding: 10px 15px;
     transition-duration: 0.3s;
     border: none;
     outline: none;
@@ -647,7 +647,7 @@ h1.matchpercent {
     box-shadow: 0px 5px 0px 0px #6288d9;
     }
 #fb_login-button:hover{
-    background: #4567af;
+    background: #4567af!important;
     transition-duration: 0.3s;
     cursor: pointer;
     -webkit-box-shadow: 0px 5px 0px 0px #6d96ec;

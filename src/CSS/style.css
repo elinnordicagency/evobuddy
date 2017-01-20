@@ -100,6 +100,19 @@ p {
 	color: #ffffff;
 }
 
+@media (max-width: 768px) {
+p {
+	border: none;
+	outline: none;
+	text-decoration: none;
+	font-family: 'PT Sans', sans-serif;
+	font-size: 19px!important;
+	letter-spacing: 1.3px;
+	line-height: 140%;
+	color: #ffffff;
+}
+	}
+
 h1 {
 	border: none;
 	outline: none;
@@ -539,7 +552,7 @@ h1.matchpercent {
     border-bottom: 1px solid #a4a4a4;
 }
 
-  .fb-login-button  {
+#fb_login-button{
     background: #3f5b96;
     border-radius: 0px;
     color: #ffffff!important;
@@ -559,7 +572,7 @@ h1.matchpercent {
     -moz-box-shadow: 0px 5px 0px 0px #6288d9;
     box-shadow: 0px 5px 0px 0px #6288d9;
     }
-     .fb-login-button:hover  {
+#fb_login-button:hover{
     background: #4567af;
     transition-duration: 0.3s;
     cursor: pointer;

@@ -181,6 +181,10 @@ h5 {
 	color: #606060!important;
 }
 
+img{
+max-width: 100%;
+}
+
 input {
 	border: none;
 	outline: none;

@@ -131,11 +131,17 @@
 					}
 				}
 			}
+
+            var distance_penalty = 40
+
+            if (user.distance){
+                distance_penalty = user.distance / 1000
+            }
 			
 			var gem = (same_likes / me.likes.length) * 100;
 			var multiplikator = 1 + mul * same_likes;
 
-			return Math.ceil((gem * multiplikator > 100) ? 100 : gem * multiplikator);
+			return Math.max(Math.min(Math.ceil((gem * multiplikator) + (20 - distance_penalty )), 100), 0);
 		}
 
 		function get_distance(lat1, lon1, lat2, lon2) {

@@ -32,35 +32,18 @@
 
 	function loggingIn(){
 		FB.getLoginStatus(function (response) {
-            authObject = response.authResponse;
-            FB.api(
-                "/" + authObject.userID + "/invitable_friends?fields=name,picture.width(100).height(100)&limit=5",
-                function (response) {
-                    if (response && !response.error) {
-                        $(".listfriends").children(".friendrow").remove();
-                        response.data.forEach(function (user) {
-                            $(".listfriends").prepend("<div class='friendrow col-xs-12'> \
-                                         <img class='col-xs-4 fbimage' src=" + user.picture.data.url + "> \
-                                         <div class='col-xs-8'><p>" + user.name + "</p></div> \
-                                         </div>"
-                                         );
-                            inviteable_friends.push(user.id);
-                        });
-                    }
-                });
-            $('[data-popup="popup-fbinvite"]').fadeIn(350);
+			FB.ui({
+				method: 'apprequests',
+				message: "You have been invited to EVObuddy",
+				to: inviteable_friends.toString()
+			}, function (resp) {
+                window.location.href = "src/matchlanding.html";
+			});
         });
 	    }
 		$(function () {
 
 			$('#invite_friends_button').on('click', function (e) {
-				FB.ui({
-					method: 'apprequests',
-					message: "You have been invited to EVObuddy",
-					to: inviteable_friends.toString()
-				}, function (resp) {
-                    window.location.href = "src/matchlanding.html";
-				});
 			});
 			$('[data-popup-open]').on('click', function (e) {
 				var targeted_popup_class = jQuery(this).attr('data-popup-open');
@@ -159,11 +142,8 @@
 				<div class="col-xs-12 text-center" style="padding:0%;">
 					<img src="src/images/fbconnect.png" style="padding:1% 0% 19% 0%;">
 				</div>
-
 			</div>
 		</div>
-
-
 		<div class="container-fluid text-center" style="padding:0px; background:#dedede; position:fixed; bottom:0px; width:100%; margin-top:90px;">
 			<img src="src/images/evologosmall.png" style="padding:25px;">
 		</div>

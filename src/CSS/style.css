@@ -630,7 +630,7 @@ h1.matchpercent {
 .matchcontainer {
 	overflow-y: scroll;
 	height: 800px;
-	padding: 0% 4% 10% 4%;
+	padding: 0% 0% 10% 0%;
 }
 .matchrow {
 	    padding-top: 3%;
@@ -666,3 +666,6 @@ h1.matchpercent {
     -moz-box-shadow: 0px 7px 0px 0px #6d96ec;
     box-shadow: 0px 5px 0px 0px #6d96ec;
     }
+   .sidebar {
+        margin-bottom: 22%;
+         }

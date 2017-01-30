@@ -627,8 +627,8 @@ form p.small {
     border: 4px solid #ffffff;
 	}
 	.profilematchimg {
-	width: auto;
-	height: 131.25px;
+	width: 90px;
+	height: 90px;
 	background: #ffffff;
 	border-radius: 50%;
 	margin: 1% auto 0 auto;

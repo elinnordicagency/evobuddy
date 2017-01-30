@@ -106,7 +106,7 @@ p {
 	outline: none;
 	text-decoration: none;
 	font-family: 'PT Sans', sans-serif;
-	font-size: 24px!important;
+	font-size: 22px!important;
 	letter-spacing: 1.3px;
 	line-height: 140%;
 	color: #ffffff!important;
@@ -130,7 +130,7 @@ p.small {
 	outline: none;
 	text-decoration: none;
 	font-family: 'PT Sans', sans-serif;
-	font-size: 18px!important;
+	font-size: 17px!important;
 	letter-spacing: 1.3px;
 	line-height: 140%;
 	color: #ffffff!important;
@@ -596,6 +596,16 @@ form p.small {
     border: 4px solid #ffffff;
 }
 
+.profilematchimg {
+	width: 164px;
+	height: 164px;
+	background: #ffffff;
+	border-radius: 50%;
+	margin: 1% auto 0 auto;
+	padding: 0px!important;
+    border: 4px solid #ffffff;
+}
+
 @media (max-width: 768px) {
 	.profileimgbig {
 		width: 180px;
@@ -616,6 +626,15 @@ form p.small {
 		padding: 0px!important;
     border: 4px solid #ffffff;
 	}
+	.profilematchimg {
+	width: auto;
+	height: 131.25px;
+	background: #ffffff;
+	border-radius: 50%;
+	margin: 1% auto 0 auto;
+	padding: 0px!important;
+    border: 4px solid #ffffff;
+}
 	h3.matchpercent {
 	font-size: 42px!important;
 	font-weight: 700!important;
@@ -636,7 +655,7 @@ h3 {
 }
 
 h3.matchpercent {
-	font-size: 62px!important;
+	font-size: 62px;
 	font-weight: 700!important;
 	letter-spacing: -2px;
 	margin-bottom: 0px;

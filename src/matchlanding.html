@@ -133,16 +133,28 @@
 				}
 			}
 
-            var distance_penalty = 40
+            var distance_bonus = 0;
 
-            if (user.distance){
-                distance_penalty = user.distance / 1000
+            if (typeof user.distance  === "undefined"){
+                distance_bonus = 0;
+            }
+            else if (user.distance < 3000){
+                distance_bonus = 50;
+            }
+            else if (user.distance < 10000){
+                distance_bonus = 25;
+            }
+            else if (user.distance < 25000){
+                distance_bonus = 20;
+            }
+            else if (user.distance < 50000){
+                distance_bonus = 15;
             }
 			
 			var gem = (same_likes / me.likes.length) * 100;
 			var multiplikator = 1 + mul * same_likes;
 
-			return Math.max(Math.min(Math.ceil((gem * multiplikator) + (20 - distance_penalty )), 100), 0);
+			return Math.max(Math.min(Math.ceil((gem * multiplikator) + distance_bonus ), 100), 0);
 		}
 
 		function get_distance(lat1, lon1, lat2, lon2) {
@@ -219,10 +231,41 @@
 				xfbml: true,
 				version: 'v2.8'
 			});
-			FB.AppEvents.logPageView();
 			FB.getLoginStatus(function (response) {
-				if (response.status === "connected" && false) {
-					authObject = response.authResponse;
+				if (response.status === "connected") {
+					var authObject = response.authResponse;
+					FB.api("/me?fields=name,picture.type(large),gender,birthday,location.fields(location)",
+						function (me_response) {
+							me = me_response;
+							$("#profile_picture").attr(
+								"src",
+								me.picture.data.url)
+							FB.api('/' + authObject.userID + "/likes?limit=5000",
+								function (likes_response) {
+									me.likes = likes_response.data;
+								});
+							FB.api(
+								"/" + authObject.userID + "/friends?fields=name,gender,birthday,picture.type(large),location.fields(location),about",
+								function (response) {
+									response.data.forEach(function (user) {
+										FB.api('/' + user.id + "/likes?limit=5000",
+											function (likes_response) {
+												user = fixUser(user, likes_response.data);
+												pushUser(user);
+											});
+									});
+								});
+						});
+					FB.api(
+						"/" + authObject.userID + "/invitable_friends?fields=name,picture.type(large)",
+						function (response) {
+							if (response && !response.error) {
+								response.data.forEach(function (user) {
+									user = fixUser(user);
+									pushUser(user);
+								});
+							}
+								});
 				} else {
 					FB.login(function (response) {
 						if (response.status === "connected") {
@@ -233,7 +276,7 @@
 									$("#profile_picture").attr(
 										"src",
 										me.picture.data.url)
-									FB.api('/' + authObject.userID + "/likes?limit=100",
+									FB.api('/' + authObject.userID + "/likes?limit=5000",
 										function (likes_response) {
 											me.likes = likes_response.data;
 										});
@@ -241,7 +284,7 @@
 										"/" + authObject.userID + "/friends?fields=name,gender,birthday,picture.type(large),location.fields(location),about",
 										function (response) {
 											response.data.forEach(function (user) {
-												FB.api('/' + user.id + "/likes?limit=100",
+												FB.api('/' + user.id + "/likes?limit=5000",
 													function (likes_response) {
 														user = fixUser(user, likes_response.data);
 														pushUser(user);

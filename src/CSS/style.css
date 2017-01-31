@@ -163,7 +163,7 @@ h1.big {
 	text-transform: uppercase;
 	font-size: 80px!important;
 	letter-spacing: -0.5px;
-	line-height: 140%;
+	line-height: 110%;
 	color: #ffffff!important;
 }
 
@@ -191,9 +191,9 @@ h1.big {
 	font-family: 'Montserrat', sans-serif!important;
 	font-weight: 700!important;
 	text-transform: uppercase;
-	font-size: 65px!important;
+	font-size: 60px!important;
 	letter-spacing: -0.5px;
-	line-height: 140%;
+	line-height: 110%;
 	color: #ffffff!important;
 }
 }
